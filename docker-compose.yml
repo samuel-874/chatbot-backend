@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  app:
+    image: 'docker-spring-boot-postgres:latest'
+    build:
+      context: .
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - SECRET_KEY=UISWUWWW832392E2NHD23ND2N3DB2B3DB2DB3DBBB3293
+      - DATA_SOURCE_URL=jdbc:postgresql://db:5432/compose-postgres
+      - DATA_SOURCE_USERNAME=compose-postgres
+      - DATA_SOURCE_PASSWORD=compose-postgres
+      - SERVER_PORT=8080
+
+  db:
+    image: 'postgres:13.1-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_USER=compose-postgres
+      - POSTGRES_PASSWORD=compose-postgres
