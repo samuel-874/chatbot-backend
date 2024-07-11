@@ -2,7 +2,7 @@ package com.techbro.sammychatbot.config;
 
 import com.techbro.sammychatbot.config.jwt.JwtAuthenticationFilter;
 import com.techbro.sammychatbot.exceptions.CustomAccessDeniedHandler;
-import com.techbro.sammychatbot.users.model.Roles;
+import com.techbro.sammychatbot.models.users.model.Roles;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

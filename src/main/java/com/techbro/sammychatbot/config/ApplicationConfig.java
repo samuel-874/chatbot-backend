@@ -1,7 +1,7 @@
 package com.techbro.sammychatbot.config;
 
-import com.techbro.sammychatbot.users.repository.UserRepository;
-import com.techbro.sammychatbot.users.service.CustomUserDetailsService;
+import com.techbro.sammychatbot.models.users.repository.UserRepository;
+import com.techbro.sammychatbot.models.users.service.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

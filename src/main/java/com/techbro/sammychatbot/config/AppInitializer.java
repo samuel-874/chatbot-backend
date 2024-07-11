@@ -1,7 +1,7 @@
 package com.techbro.sammychatbot.config;
 
-import com.techbro.sammychatbot.users.dto.SignupRequest;
-import com.techbro.sammychatbot.users.service.UsersService;
+import com.techbro.sammychatbot.models.users.dto.SignupRequest;
+import com.techbro.sammychatbot.models.users.service.UsersService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

@@ -2,8 +2,8 @@ package com.techbro.sammychatbot.config.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techbro.sammychatbot.commons.CustomResponse;
-import com.techbro.sammychatbot.users.repository.UserRepository;
-import com.techbro.sammychatbot.users.service.CustomUserDetailsService;
+import com.techbro.sammychatbot.models.users.repository.UserRepository;
+import com.techbro.sammychatbot.models.users.service.CustomUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
