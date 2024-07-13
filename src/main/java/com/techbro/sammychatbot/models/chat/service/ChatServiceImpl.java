@@ -33,7 +33,7 @@ public class ChatServiceImpl implements ChatService{
     @Transactional
     public ResponseEntity<?> prompt(ChatRequest chatRequest) {
         var user = userService.getAuthenticatedUser();
-        String reply = getPromptResponse(chatRequest.getMessage());//TODO - prompt ai
+        String reply = getPromptResponse(chatRequest.getMessage());
 
         ChatRoomEntity chat_room = getChatRoom(chatRequest, user);
         ChatEntity userPrompt = ChatMapper.mapToChatEntity(chat_room, chatRequest.getMessage(), ChatUser.SENDER);
@@ -46,9 +46,9 @@ public class ChatServiceImpl implements ChatService{
     @Override
     public ResponseEntity<?> getRecentChat(Pageable pageable) {
         UserEntity loggedInUser = userService.getAuthenticatedUser();
-        Page<ChatRoomEntity> paginatedData = roomRepository.findByUserId(loggedInUser.getId(),pageable);//TODO -> Apply Pagination
+        Page<ChatRoomEntity> paginatedData = roomRepository.findByUserId(loggedInUser.getId(),pageable);
         List<RecentChats> recentChats = paginatedData.stream().map(ChatMapper::mapToRecentChat).toList();
-        return CustomResponse.paginate("Recent Chat Retrieved Successfully",200,recentChats,paginatedData);//TODO -> Replace bake with paginate
+        return CustomResponse.paginate("Recent Chat Retrieved Successfully",200,recentChats,paginatedData);
     }
 
     @Override
@@ -69,9 +69,10 @@ public class ChatServiceImpl implements ChatService{
 
     private ChatRoomEntity getChatRoom(ChatRequest chatRequest, UserEntity user) {//find or create chatRoom
         var optional = roomRepository.findById(chatRequest.getChatRoomId());
+        String abbreviated = chatRequest.getMessage().substring(0,21).concat("...");
         return optional.orElseGet(() -> roomRepository.save(ChatRoomEntity.builder()
                 .user(user)
-                .stringChatReference(chatRequest.getMessage())//TODO - reduce title to some words
+                .stringChatReference(abbreviated)
                 .build()));
     }
 
