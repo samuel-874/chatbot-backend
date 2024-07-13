@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -27,4 +30,7 @@ public class ChatRoomEntity {
     private String stringChatReference;//title
     @ManyToOne(cascade = CascadeType.DETACH)
     private UserEntity user;
+    @UpdateTimestamp
+    @Builder.Default
+    private LocalDateTime lastUpdated = LocalDateTime.now();
 }

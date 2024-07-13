@@ -46,9 +46,9 @@ public class ChatServiceImpl implements ChatService{
     @Override
     public ResponseEntity<?> getRecentChat(Pageable pageable) {
         UserEntity loggedInUser = userService.getAuthenticatedUser();
-        List<ChatRoomEntity> chatRooms = roomRepository.findByUserId(loggedInUser.getId());//TODO -> Apply Pagination
-        List<RecentChats> recentChats = chatRooms.stream().map(ChatMapper::mapToRecentChat).toList();
-        return CustomResponse.bake("Recent Chat Retrieved Successfully",200,recentChats);//TODO -> Replace bake with paginate
+        Page<ChatRoomEntity> paginatedData = roomRepository.findByUserId(loggedInUser.getId(),pageable);//TODO -> Apply Pagination
+        List<RecentChats> recentChats = paginatedData.stream().map(ChatMapper::mapToRecentChat).toList();
+        return CustomResponse.paginate("Recent Chat Retrieved Successfully",200,recentChats,paginatedData);//TODO -> Replace bake with paginate
     }
 
     @Override
