@@ -2,6 +2,7 @@ package com.techbro.sammychatbot.models.chat.controller;
 
 import com.techbro.sammychatbot.models.chat.dto.ChatRequest;
 import com.techbro.sammychatbot.models.chat.service.ChatService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ public class ChatController {
     private final ChatService chatService;
 
     @PostMapping("prompt")
-    public ResponseEntity<?> sendPrompt(ChatRequest chatRequest){
+    public ResponseEntity<?> sendPrompt(@Valid @RequestBody ChatRequest chatRequest){
         return chatService.prompt(chatRequest);
     }
 

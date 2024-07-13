@@ -1,6 +1,7 @@
 package com.techbro.sammychatbot.exceptions;
 
 import com.techbro.sammychatbot.commons.CustomResponse;
+import com.techbro.sammychatbot.exceptions.custom_exceptions.AIPromptException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -43,6 +44,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> hadInvalidArgument(MethodArgumentNotValidException notValidException){
         List<String> errors = notValidException.getBindingResult().getFieldErrors().stream().map(FieldError::getDefaultMessage).toList();
         return CustomResponse.bake("Invalid Inputs",400,errors);
+    }
+
+    @ExceptionHandler(AIPromptException.class)
+    public ResponseEntity<?> handleAIPrompt(AIPromptException exception){
+        System.out.println("Error Occurred While Prompting AI"+exception.getMessage());
+        return CustomResponse.bake("Something went wrong! Please try again",500);
     }
 
 }

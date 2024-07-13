@@ -36,6 +36,8 @@ public class SecurityConfig {
             authorize.requestMatchers("/api/v1/auth/user/**").permitAll();
             authorize.requestMatchers("/api/v1/user/**").hasAnyRole(Roles.ADMIN.name(),Roles.USER.name());
             authorize.requestMatchers("/api/v1/admin/**").hasAnyRole(Roles.ADMIN.name());
+            authorize.requestMatchers("/api/v1/chat/**").hasAnyRole(Roles.ADMIN.name(),Roles.USER.name());
+            authorize.anyRequest().authenticated();
         }).exceptionHandling((handler) -> handler.accessDeniedHandler(new CustomAccessDeniedHandler()));
 
         http.sessionManagement((session) -> {
