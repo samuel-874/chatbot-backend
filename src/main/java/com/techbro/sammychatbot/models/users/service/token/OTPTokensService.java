@@ -10,5 +10,5 @@ public interface OTPTokensService {
 
     void updateToken(OTPToken token);
 
-    boolean hasBeenValidated(String email, String token);
+    boolean hasBeenValidated(String email);
 }

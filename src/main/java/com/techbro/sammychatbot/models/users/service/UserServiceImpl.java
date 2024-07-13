@@ -2,6 +2,7 @@ package com.techbro.sammychatbot.models.users.service;
 
 import com.techbro.sammychatbot.commons.CustomResponse;
 import com.techbro.sammychatbot.config.jwt.JwtService;
+import com.techbro.sammychatbot.models.mails.EmailSenderService;
 import com.techbro.sammychatbot.models.users.dto.*;
 import com.techbro.sammychatbot.models.users.model.OTPToken;
 import com.techbro.sammychatbot.models.users.model.Roles;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UsersService{
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final HttpServletResponse httpServletResponse;
+    private final EmailSenderService emailSenderService;
 
     @Override
     public AuthResponse signup(SignupRequest signupRequest) {
@@ -37,7 +39,7 @@ public class UserServiceImpl implements UsersService{
         newUser.setPassword(encodedPassword);
         newUser.setRoles(Roles.USER);
         userRepository.save(newUser);
-
+        emailSenderService.sendWelcomeEmail(signupRequest.getEmail());
         return generateToken(newUser);
     }
 
@@ -57,6 +59,7 @@ public class UserServiceImpl implements UsersService{
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 newUser.getRoles(),
                 newUser.getPassword()));
+
 
         return generateToken(newUser);
     }
@@ -121,7 +124,7 @@ public class UserServiceImpl implements UsersService{
         if(!isExistingByEmail) return CustomResponse.bake("User not existing",404);
         OTPToken token = otpTokensService.generateOTP(email);
         System.out.println(token);
-        // todo send to user email
+        emailSenderService.sendOTPMail(token.getEmail(),token.getToken());
         return CustomResponse.bake("Six digit OTP sent successfully",201);
     }
 
@@ -138,8 +141,8 @@ public class UserServiceImpl implements UsersService{
     public ResponseEntity<?> resetPassword(PasswordRestRequest passwordRestRequest) {
         UserEntity user = userRepository.findByEmail(passwordRestRequest.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not existing"));
         boolean oldPasswordMatchNew =  passwordEncoder.matches(passwordRestRequest.getNewPassword(), user.getPassword());
-        if(oldPasswordMatchNew)return CustomResponse.bake("New Password Cannot be the same as the old ",400);
-        boolean hasValidatedOTP = otpTokensService.hasBeenValidated(passwordRestRequest.getEmail(), passwordRestRequest.getOtp());
+        if(oldPasswordMatchNew)return CustomResponse.bake("New Password Cannot Be The Same As The Old ",400);
+        boolean hasValidatedOTP = otpTokensService.hasBeenValidated(passwordRestRequest.getEmail());
         if(!hasValidatedOTP) return CustomResponse.bake("You'll need to validate an otp",400);
         String password = passwordEncoder.encode(passwordRestRequest.getNewPassword());
         user.setPassword(password);

@@ -68,12 +68,20 @@ public class ChatServiceImpl implements ChatService{
 
 
     private ChatRoomEntity getChatRoom(ChatRequest chatRequest, UserEntity user) {//find or create chatRoom
-        var optional = roomRepository.findById(chatRequest.getChatRoomId());
-        String abbreviated = chatRequest.getMessage().substring(0,21).concat("...");
-        return optional.orElseGet(() -> roomRepository.save(ChatRoomEntity.builder()
-                .user(user)
-                .stringChatReference(abbreviated)
-                .build()));
+        ChatRoomEntity chatRoomEntity = null;
+        String abbreviated = chatRequest.getMessage();
+        if(abbreviated.length() > 21){
+             abbreviated = chatRequest.getMessage().substring(0,21).concat("...");
+        }
+        if(chatRequest.getChatRoomId() == null){//new
+           chatRoomEntity =  roomRepository.save(ChatRoomEntity.builder()
+                    .user(user)
+                    .stringChatReference(abbreviated)
+                    .build());
+        }else{
+            chatRoomEntity = roomRepository.findById(chatRequest.getChatRoomId()).orElseThrow(() -> new IllegalStateException("Invalid ChatRoomId"));
+        }
+       return chatRoomEntity;
     }
 
     private String getPromptResponse(String message){

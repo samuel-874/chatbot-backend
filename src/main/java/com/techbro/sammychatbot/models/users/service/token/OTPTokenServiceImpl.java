@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Random;
 
 @Service
@@ -20,7 +21,7 @@ public class OTPTokenServiceImpl implements OTPTokensService {
     public OTPToken generateOTP(String email) {
         OTPToken otpToken = new OTPToken();
         String otp = getOTP();
-        var existingToken = otpTokenRepository.findByTokenAndEmail(email,otp);
+        var existingToken = otpTokenRepository.findByEmail(email);
         existingToken.ifPresent(otpTokenRepository::delete);
         otpToken.setToken(otp);
         otpToken.setEmail(email);
@@ -35,7 +36,8 @@ public class OTPTokenServiceImpl implements OTPTokensService {
 
     @Override
     public boolean validateOTP(String email, String otp) {
-        OTPToken token = otpTokenRepository.findByTokenAndEmail(otp,email).orElseThrow(() -> new IllegalStateException("Invalid OTP"));
+        OTPToken token = otpTokenRepository.findByEmail(email).orElseThrow(() -> new IllegalStateException("Invalid OTP"));
+        if(!Objects.equals(otp,token.getToken())) throw new IllegalStateException("Invalid OTP");
         if(token.getValidated()) throw new IllegalStateException("OTP has been validated already");
         boolean isExpired = token.getExpiration().isBefore(LocalDateTime.now());
         if(isExpired) return false;
@@ -49,8 +51,10 @@ public class OTPTokenServiceImpl implements OTPTokensService {
     }
 
     @Override
-    public boolean hasBeenValidated(String email,String token){
-        OTPToken otpToken = otpTokenRepository.findByTokenAndEmail(token,email).orElseThrow(() -> new IllegalStateException("OTP has not been validated"));
+    public boolean hasBeenValidated(String email){
+        OTPToken otpToken = otpTokenRepository.findByEmail(email).orElseThrow(() -> new IllegalStateException("OTP has not been validated"));
+
+        if(otpToken.getUsed()) throw new IllegalStateException("OTP has been used");
         if(otpToken.getValidated()){
             otpToken.setUsed(true);
             otpTokenRepository.save(otpToken);

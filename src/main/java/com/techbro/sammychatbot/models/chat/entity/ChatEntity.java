@@ -25,6 +25,7 @@ public class ChatEntity {
     private Long id;
     @ManyToOne
     private ChatRoomEntity chatRoomEntity;
+    @Column(length = 3000)
     private String message;
     @Builder.Default
     private ChatUser userRole = ChatUser.SENDER;
